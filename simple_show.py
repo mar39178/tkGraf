@@ -2,6 +2,7 @@
 
 from os.path import basename, splitext
 import tkinter as tk
+from tkinter import messagebox
 from tkinter import filedialog
 from matplotlib import pyplot as plt
 
@@ -46,17 +47,33 @@ class Application(tk.Tk):
         super().__init__(className=self.name)
         self.title(self.name)
         self.bind("<Escape>", self.quit)
+
         self.entry = tk.Entry()
         self.entry.pack()
-        self.btn1 = tk.Button(text="text" )
+        self.btn1 = tk.Button(text="...", command=self.find)
         self.btn1.pack()
-        self.btn2 = tk.Button(text="text2")
+        self.btn2 = tk.Button(text="Vykreslit", command=self.show)
         self.btn2.pack()
+        self.btn3 = tk.Button(text="Quit", command=quit)
+        self.btn3.pack()
 
     
+    def find(self):
+        file = filedialog.askopenfile()   
+        self.entry.insert(0, file.name)
 
     def show(self):
-        print(self.entry.get())
+        file = self.entry.get()
+        f = open(file, "r")
+        content = f.readlines()
+        x_values = []
+        y_values = []
+        for line in content:
+            lines = line.split()
+            x_values.append(float(lines[0]))
+            y_values.append(float(lines[1]))
+        plt.plot(x_values, y_values)  
+        plt.show()          
 
     def about(self):
         window = About(self)

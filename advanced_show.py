@@ -1,9 +1,9 @@
 from os.path import basename, splitext
 import tkinter as tk
-from tkinter import messagebox
 from tkinter import filedialog
 from matplotlib import pyplot as plt
 import tkinter.ttk as ttk
+import os.path
 
 class MyEntry(tk.Entry):
     def __init__(self, master=None, cnf={}, **kw):
@@ -49,7 +49,7 @@ class Application(tk.Tk):
         self.fileFrame.pack(padx=5, pady=5, fill="x")
         self.fileEntry = MyEntry(self.fileFrame)
         self.fileEntry.pack(fill="x")
-        self.fileBtn = tk.Button(self.fileFrame, text="...")
+        self.fileBtn = tk.Button(self.fileFrame, text="...", command=self.selectFile)
         self.fileBtn.pack(anchor="e")
         
         self.dataFormatVar = tk.IntVar(value=1)
@@ -79,12 +79,31 @@ class Application(tk.Tk):
         self.lineCBox = ttk.Combobox(self.graphFrame, values=("-", "--", "-.", ":"))
         self.lineCBox.grid(row=5, column=1)
 
+        self.makeBtn = tk.Button(self, text="Vykreslit", command=self.plot)
+        self.makeBtn.pack(pady="5", anchor="w")
+
         # -------------------------------
         self.quitBtn = tk.Button(self, text="Quit", command=quit)
         self.quitBtn.pack()
 
     def quit(self, event=None):
         super().quit()
+
+    def selectFile(self):
+        self.fileEntry.value = tk.filedialog.askopenfilename()
+
+    def plot(self):
+        if not os.path.isfile(self.fileEntry.value):
+            return
+        with open(self.fileEntry.value, "r") as f:
+            x = f.readline().split(";")
+            x = [float(i.replace(",", ".")) for i in x]
+
+            y = f.readline().split(";")
+            y = [float(i.replace(",", ".")) for i in y]
+        plt.plot(x, y)
+        plt.show()
+
 
 
 app = Application()

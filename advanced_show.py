@@ -70,13 +70,15 @@ class Application(tk.Tk):
         self.yEntry = MyEntry(self.graphFrame)
         self.yEntry.grid(row=2, column=1)
         tk.Label(self.graphFrame, text='Mřížka').grid(row=3, column=0)
-        self.gridOpt = tk.Checkbutton(self.graphFrame)
+        self.gridVar = tk.BooleanVar(value=True)
+        self.gridOpt = tk.Checkbutton(self.graphFrame, variable=self.gridVar)
         self.gridOpt.grid(row=3, column=1, sticky=tk.W)
         tk.Label(self.graphFrame, text='Aproximace').grid(row=4, column=0)
         self.aproxOpt = tk.Checkbutton(self.graphFrame)
         self.aproxOpt.grid(row=4, column=1, sticky=tk.W)
         tk.Label(self.graphFrame, text='Čára').grid(row=5, column=0)
-        self.lineCBox = ttk.Combobox(self.graphFrame, values=("-", "--", "-.", ":"))
+        self.lineVar = tk.StringVar(value="none")
+        self.lineCBox = ttk.Combobox(self.graphFrame, values=("none", "-", "--", "-.", ":"), variable=self.lineVar)
         self.lineCBox.grid(row=5, column=1)
 
         self.makeBtn = tk.Button(self, text="Vykreslit", command=self.plot)
@@ -96,12 +98,27 @@ class Application(tk.Tk):
         if not os.path.isfile(self.fileEntry.value):
             return
         with open(self.fileEntry.value, "r") as f:
-            x = f.readline().split(";")
-            x = [float(i.replace(",", ".")) for i in x]
+            if self.dataFormatVar.get() == 1:
+                x = f.readline().split(";")
+                x = [float(i.replace(",", ".")) for i in x]
 
-            y = f.readline().split(";")
-            y = [float(i.replace(",", ".")) for i in y]
-        plt.plot(x, y)
+                y = f.readline().split(";")
+                y = [float(i.replace(",", ".")) for i in y]
+            elif self.dataFormatVar.get() == 2:
+                q = f.readlines()
+                x = []
+                y = []
+                for line in q:
+                    if line != '':
+                        w = line.split(";")
+                        x.append(float(w[0].replace(",", ".")))
+                        y.append(float(w[1].replace(",", ".")))
+
+        plt.plot(x, y, linestyle=self.lineVar.get())
+        plt.title(self.titleEntry.value)
+        plt.xlabel(self.xEntry.value)
+        plt.ylabel(self.yEntry.value)
+        plt.grid(self.gridVar.get())
         plt.show()
 
 

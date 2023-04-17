@@ -80,6 +80,10 @@ class Application(tk.Tk):
         self.lineVar = tk.StringVar(value="-")
         self.lineCBox = ttk.Combobox(self.graphFrame, values=("-", "--", "-.", ":"), textvariable=self.lineVar)
         self.lineCBox.grid(row=5, column=1)
+        tk.Label(self.graphFrame, text='Barva').grid(row=6, column=0)
+        self.colorVar = tk.StringVar(value="blue")
+        self.colorCBox = ttk.Combobox(self.graphFrame, values=("blue", "red", "green", "yelow"), textvariable=self.colorVar)
+        self.colorCBox.grid(row=6, column=1)
 
         self.makeBtn = tk.Button(self, text="Vykreslit", command=self.plot)
         self.makeBtn.pack(pady="5", anchor="w")
@@ -114,7 +118,7 @@ class Application(tk.Tk):
                         x.append(float(w[0].replace(",", ".")))
                         y.append(float(w[1].replace(",", ".")))
 
-        plt.plot(x, y, linestyle=self.lineVar.get())
+        plt.plot(x, y, linestyle=self.lineVar.get(), color=self.colorVar.get())
         plt.title(self.titleEntry.value)
         plt.xlabel(self.xEntry.value)
         plt.ylabel(self.yEntry.value)

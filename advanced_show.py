@@ -77,8 +77,8 @@ class Application(tk.Tk):
         self.aproxOpt = tk.Checkbutton(self.graphFrame)
         self.aproxOpt.grid(row=4, column=1, sticky=tk.W)
         tk.Label(self.graphFrame, text='Čára').grid(row=5, column=0)
-        self.lineVar = tk.StringVar(value="none")
-        self.lineCBox = ttk.Combobox(self.graphFrame, values=("none", "-", "--", "-.", ":"), variable=self.lineVar)
+        self.lineVar = tk.StringVar(value="-")
+        self.lineCBox = ttk.Combobox(self.graphFrame, values=("-", "--", "-.", ":"), textvariable=self.lineVar)
         self.lineCBox.grid(row=5, column=1)
 
         self.makeBtn = tk.Button(self, text="Vykreslit", command=self.plot)
